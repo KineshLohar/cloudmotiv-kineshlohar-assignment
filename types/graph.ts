@@ -6,6 +6,9 @@ export interface PKBNode {
   id: NodeId;            // e.g., "1" or uuid
   title: string;
   note?: string;
+  category?: string;
+  color?: string; // hex or css color string
+  tags?: string[];
   position?: { x: number; y: number }; // persisted after user drags
   createdAt?: string;
 }
