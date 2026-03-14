@@ -4,7 +4,12 @@ import type { Connection, Edge, Node } from "reactflow";
 import { MarkerType, applyEdgeChanges, applyNodeChanges } from "reactflow";
 import { v4 as uuid } from "uuid";
 
-import type { GraphState, NodeHandle, PKBEdge, PKBNode } from "@/src/types/graph";
+import type {
+  GraphState,
+  NodeHandle,
+  PKBEdge,
+  PKBNode,
+} from "@/src/types/graph";
 import { seedGraph } from "@/src/utils/seedGraph";
 import type { LayoutMode } from "@/src/utils/graphLayout";
 
@@ -51,7 +56,8 @@ function fromRfNodes(nodes: Node[], prev: PKBNode[]): PKBNode[] {
     return {
       id: n.id,
       position: n.position,
-      data: (n.data as any) ?? prevNode?.data ?? { title: "Untitled", handles: defaultHandles() },
+      data: (n.data as any) ??
+        prevNode?.data ?? { title: "Untitled", handles: defaultHandles() },
     };
   });
 }
@@ -66,7 +72,9 @@ function fromRfEdges(edges: Edge[], prev: PKBEdge[]): PKBEdge[] {
       sourceHandle: (e as any).sourceHandle,
       targetHandle: (e as any).targetHandle,
       label: (e.label as any) ?? prevEdge?.label,
-      directed: (e.data as any)?.directed ?? (e.markerEnd != null) ?? prevEdge?.directed,
+      directed:
+        (e.data as any)?.directed ??
+        (e.markerEnd != null ? true : prevEdge?.directed),
       animated: e.animated ?? prevEdge?.animated,
       createdAt: prevEdge?.createdAt,
     };
@@ -154,8 +162,10 @@ export const useGraphStore = create<GraphStore>()(
         set({ nodes, rfNodes: toRfNodes(nodes) });
       },
 
-      setSelectedNodeId: (id) => set({ selectedNodeId: id, selectedEdgeId: null }),
-      setSelectedEdgeId: (id) => set({ selectedEdgeId: id, selectedNodeId: null }),
+      setSelectedNodeId: (id) =>
+        set({ selectedNodeId: id, selectedEdgeId: null }),
+      setSelectedEdgeId: (id) =>
+        set({ selectedEdgeId: id, selectedNodeId: null }),
       setSidebarOpen: (open) => set({ sidebarOpen: open }),
       setStructure: (s) => {
         set({ structure: s });
@@ -176,7 +186,9 @@ export const useGraphStore = create<GraphStore>()(
       },
       onNodeDragStop: (nodeId, position) => {
         // Persist final position to GraphState; do NOT write during drag.
-        const nextNodes = get().nodes.map((n) => (n.id === nodeId ? { ...n, position } : n));
+        const nextNodes = get().nodes.map((n) =>
+          n.id === nodeId ? { ...n, position } : n,
+        );
         set({ nodes: nextNodes });
       },
 
@@ -192,7 +204,9 @@ export const useGraphStore = create<GraphStore>()(
             category: node.data.category,
             color: node.data.color,
             tags: node.data.tags ?? [],
-            handles: node.data.handles?.length ? node.data.handles : defaultHandles(),
+            handles: node.data.handles?.length
+              ? node.data.handles
+              : defaultHandles(),
             createdAt,
           },
         };
@@ -207,13 +221,17 @@ export const useGraphStore = create<GraphStore>()(
       },
 
       updateNodeData: (nodeId, patch) => {
-        const nextNodes = get().nodes.map((n) => (n.id === nodeId ? { ...n, data: { ...n.data, ...patch } } : n));
+        const nextNodes = get().nodes.map((n) =>
+          n.id === nodeId ? { ...n, data: { ...n.data, ...patch } } : n,
+        );
         set({ nodes: nextNodes, rfNodes: toRfNodes(nextNodes) });
       },
 
       deleteNode: (nodeId) => {
         const nextNodes = get().nodes.filter((n) => n.id !== nodeId);
-        const nextEdges = get().edges.filter((e) => e.source !== nodeId && e.target !== nodeId);
+        const nextEdges = get().edges.filter(
+          (e) => e.source !== nodeId && e.target !== nodeId,
+        );
         set({
           nodes: nextNodes,
           edges: nextEdges,
@@ -270,7 +288,9 @@ export const useGraphStore = create<GraphStore>()(
       },
 
       updateEdgeLabel: (edgeId, label) => {
-        const nextEdges = get().edges.map((e) => (e.id === edgeId ? { ...e, label } : e));
+        const nextEdges = get().edges.map((e) =>
+          e.id === edgeId ? { ...e, label } : e,
+        );
         set({ edges: nextEdges, rfEdges: toRfEdges(nextEdges) });
       },
     }),
@@ -287,7 +307,6 @@ export const useGraphStore = create<GraphStore>()(
         state.rfNodes = toRfNodes(nodes);
         state.rfEdges = toRfEdges(edges);
       },
-    }
-  )
+    },
+  ),
 );
-

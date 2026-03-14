@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { useGraphStore } from "@/src/hooks/useGraphStore";
+import { LayoutMode } from "@/src/utils/graphLayout";
 
 export function TopToolbar() {
   const layout = useGraphStore((s) => s.layout);
